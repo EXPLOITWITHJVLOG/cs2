@@ -16,6 +16,14 @@ RUN IT THE SECOND TIME
 BETA TESTING FOR MY POOKIE, NASEEQ (i love you twin)
 
 
+if it says a error when trying to downoad all the pip installs 
+
+download this on ur cmd 
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+if this dosen't work, just contact me on discord c00lk1d (this isnt the foreskin game i made the user 2 years before)
+
 
 
 
