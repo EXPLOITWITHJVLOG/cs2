@@ -32,4 +32,14 @@ if this dosen't work, just contact me on discord c00lk1d (this isnt the foreskin
 
 
 
+the motherfukkin aimassist dosent fucking work for some reason the math is wayyyyy off
+
+this code is skidded, runs off of prayers and chatgpt 
+if this was a car, it would be a car that only goes in first gear
+this is a BETA version of this aimbot, but totally worth it cuz external
+
+
+pls no hate :3 
+
+
 
