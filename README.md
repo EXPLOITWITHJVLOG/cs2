@@ -20,10 +20,15 @@ if it says a error when trying to downoad all the pip installs
 
 download this on ur cmd 
 
+python -m pip install --upgrade pip setuptools wheel
+
+or this
+
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-if this dosen't work, just contact me on discord c00lk1d (this isnt the foreskin game i made the user 2 years before)
+or try to update python 
 
+if this dosen't work, just contact me on discord c00lk1d (this isnt the foreskin game i made the user 2 years before)
 
 
 
