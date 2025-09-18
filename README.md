@@ -39,6 +39,20 @@ if this was a car, it would be a car that only goes in first gear
 this is a BETA version of this aimbot, but totally worth it cuz external
 
 
+
+
+naseeq if ur reading this then korean guy is spying on you (watch u goon)
+jk
+but fr tho if it dosent work try to call me like 12 hours later cuz i release from school early
+if ur sleeping (which i know u not) then idk what to do :/
+
+ill try to fix this ok but the only reason it worked for me was because i had visual studio installed, if it REALLY dosent work just install visual studio with c# 
+If this dont work ur pc is just ass 
+deadass u can sell this to ur friends but im gonna share it to kani also
+if u want foottage again js watch my yt (with mouse camera pov)
+
+WE love you brochacho <3
+
 pls no hate :3 
 
 
