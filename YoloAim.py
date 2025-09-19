@@ -1,192 +1,166 @@
 import win32api
 import win32con
 import tkinter as tk
-import numpy as np
-import ultralytics
 import threading
-import math
 import time
+import math
+import numpy as np
 import cv2
 import mss
+import ultralytics
+import torch
 
 
 class Config:
     def __init__(self):
+        # Screen resolution
         self.width = 1920
         self.height = 1080
 
+        # Crosshair center
         self.center_x = self.width // 2
         self.center_y = self.height // 2
 
-        self.capture_width = 120
-        self.capture_height = 170
-        self.capture_left = self.center_x - self.capture_width // 2
-        self.capture_top = self.center_y - self.capture_height // 2
-        self.crosshairX = self.capture_width // 2
-        self.crosshairY = self.capture_height // 2
+        # Default settings (centered)
+        self.offset_x = 0
+        self.offset_y = 0
+        self.Sensitivity = 1.20
+        self.delay = 0.003
+        self.MovementCoefficientX = 0.50
+        self.MovementCoefficientY = 0.50
+        self.FOV = 60
+        self.movementSteps = 1
 
+        # Capture region
+        self.capture_size = 300
+        self.capture_left = self.center_x - self.capture_size // 2
+        self.capture_top = self.center_y - self.capture_size // 2
         self.region = {
             "top": self.capture_top,
             "left": self.capture_left,
-            "width": self.capture_width,
-            "height": self.capture_height + 100,
+            "width": self.capture_size,
+            "height": self.capture_size,
         }
 
-        # defaults from your script
+        # Runtime flags
         self.Running = True
-        self.AimToggle = False
-        self.Sensitivity = 1
-        self.MovementCoefficientX = 0.80
-        self.MovementCoefficientY = 0.65
-        self.movementSteps = 5
-        self.delay = 0.007
-        self.radius = 60
-        self.rectC = None
-        self.fovC = None
+        self.AimEnabled = True
 
 
 config = Config()
 
 
-def CreateOverlay():
+# === UI PANEL ===
+def CreateUIPanel():
     root = tk.Tk()
-    root.title("NAVALEN AIM ASSIST")
-    root.geometry("250x150")
+    root.title("N.A.S")
     root.configure(bg="black")
+    root.geometry("250x200")
 
-    tk.Label(
-        root,
-        text="⚡ NAVALEN AIM ASSIST ⚡",
-        font=("Helvetica", 14, "bold"),
-        fg="#9b59b6",
-        bg="black",
-    ).pack(pady=10)
-
-    def toggleAimbot():
-        config.AimToggle = not config.AimToggle
-        if config.AimToggle:
-            ToggleBtn.config(text="Deactivate Aimbot", bg="red")
-        else:
-            ToggleBtn.config(text="Activate Aimbot", bg="#9b59b6")
-
-    ToggleBtn = tk.Button(
-        root,
-        text="Activate Aimbot",
-        command=toggleAimbot,
-        bg="#9b59b6",
-        fg="white",
-        relief="flat",
-        padx=20,
-        pady=10,
-    )
-    ToggleBtn.pack(pady=10)
+    tk.Label(root, text="N.A.S ASSIST", font=("Helvetica", 16, "bold"),
+             fg="lime", bg="black").pack(pady=10)
 
     def quitProgram():
-        config.AimToggle = False
+        config.AimEnabled = False
         config.Running = False
         root.quit()
 
-    tk.Button(
-        root,
-        text="Quit",
-        command=quitProgram,
-        bg="red",
-        fg="white",
-        relief="flat",
-        padx=20,
-        pady=5,
-    ).pack(pady=5)
+    def toggleAim():
+        config.AimEnabled = not config.AimEnabled
+        aim_label.config(text=f"Aim Enabled: {config.AimEnabled}")
 
-    # Overlay window
-    overlay = tk.Toplevel(root)
-    overlay.geometry(
-        f"150x150+{config.center_x - config.radius}+{config.center_y - config.radius}"
-    )
-    overlay.overrideredirect(True)
-    overlay.attributes("-topmost", True)
-    overlay.attributes("-transparentcolor", "blue")
+    # Aim toggle button
+    aim_label = tk.Label(root, text=f"Aim Enabled: {config.AimEnabled}", fg="white", bg="black")
+    aim_label.pack(pady=5)
 
-    canvas = tk.Canvas(
-        overlay, width=150, height=150, bg="blue", bd=0, highlightthickness=0
-    )
-    canvas.pack()
-    config.fovC = canvas.create_oval(
-        0, 0, config.radius * 2, config.radius * 2, outline="#9b59b6"
-    )
-    config.rectC = canvas.create_rectangle(
-        config.radius - 10,
-        config.radius - 10,
-        config.radius + 10,
-        config.radius + 10,
-        outline="white",
-    )
+    tk.Button(root, text="Toggle Aim", command=toggleAim,
+              bg="purple", fg="white").pack(pady=5)
+
+    # Quit button
+    tk.Button(root, text="Quit", command=quitProgram,
+              bg="red", fg="white").pack(pady=20)
 
     root.mainloop()
 
 
-def main():
-    model = ultralytics.YOLO("yolov8n.pt")
-    screenCapture = mss.mss()
+# === CIRCLE OVERLAY ===
+def CreateOverlay():
+    overlay = tk.Tk()
+    overlay.overrideredirect(True)
+    overlay.attributes("-topmost", True)
+    overlay.attributes("-transparentcolor", "black")
 
-    overlayThread = threading.Thread(target=CreateOverlay, daemon=True)
-    overlayThread.start()
+    overlay.geometry(f"{config.width}x{config.height}")
+    canvas = tk.Canvas(overlay, width=config.width, height=config.height,
+                       bg="black", highlightthickness=0)
+    canvas.pack()
+
+    # Purple circle for FOV
+    r = config.FOV
+    cx, cy = config.center_x, config.center_y
+    canvas.create_oval(cx-r, cy-r, cx+r, cy+r, outline="purple", width=2)
+
+    overlay.mainloop()
+
+
+# === AIM ASSIST ===
+def AimAssist():
+    # pick GPU if available
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print("Using:", device)
+
+    # load YOLO on correct device
+    model = ultralytics.YOLO("yolov8n.pt").to(device)
+    screen = mss.mss()
 
     while config.Running:
         time.sleep(0.001)
-
-        if not config.AimToggle:
-            time.sleep(0.05)
+        if not config.AimEnabled:
             continue
 
-        try:
-            GameFrame = np.array(screenCapture.grab(config.region))
-            GameFrame = cv2.cvtColor(GameFrame, cv2.COLOR_BGRA2BGR)
-            results = model.predict(source=GameFrame, conf=0.5, classes=[0], verbose=False, max_det=10)
+        frame = np.array(screen.grab(config.region))
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)
 
-            if len(results[0].boxes) == 0:
-                continue
+        results = model.predict(frame, conf=0.5, classes=[0],
+                                verbose=False, max_det=5, device=device)
+        boxes = results[0].boxes.xyxy
 
-            boxes = results[0].boxes.xyxy.cpu().numpy()
+        if len(boxes) == 0:
+            continue
 
-            # Find closest box
-            distsm = 99999
-            indexMin = 0
-            for i in range(len(boxes)):
-                x1, y1, x2, y2 = boxes[i]
-                targetX = (x1 + x2) / 2
-                targetY = (y1 + y2) / 2
-                moveX = targetX - config.crosshairX
-                moveY = targetY - config.crosshairY
-                distance = math.sqrt(moveX**2 + moveY**2)
-                if distance < distsm:
-                    distsm = distance
-                    indexMin = i
+        closest = None
+        min_dist = 99999
+        for box in boxes:
+            x1, y1, x2, y2 = box.tolist()
+            tx = int((x1 + x2) / 2) + config.capture_left + config.offset_x
+            ty = int((y1 + y2) / 2) + config.capture_top + config.offset_y
 
-            # Move toward that target
-            x1, y1, x2, y2 = boxes[indexMin]
-            targetX = (x1 + x2) / 2
-            targetY = (y1 + y2) / 2
+            dist = math.hypot(tx - config.center_x, ty - config.center_y)
+            if dist < min_dist:
+                min_dist = dist
+                closest = (tx, ty)
 
-            moveX = int((targetX - config.crosshairX) // config.Sensitivity)
-            moveY = int((targetY - config.crosshairY) // config.Sensitivity)
+        if closest and min_dist < config.FOV:
+            moveX = int((closest[0] - config.center_x) // config.Sensitivity)
+            moveY = int((closest[1] - config.center_y) // config.Sensitivity)
 
-            distance = math.sqrt(moveX**2 + moveY**2)
-            if distance < config.radius:
-                for _ in range(config.movementSteps):
-                    win32api.mouse_event(
-                        win32con.MOUSEEVENTF_MOVE,
-                        int(moveX * config.MovementCoefficientX),
-                        int(moveY * config.MovementCoefficientY),
-                        0,
-                        0,
-                    )
-                    time.sleep(config.delay)
-
-        except Exception as e:
-            print("Error in loop:", e)
-
-    cv2.destroyAllWindows()
+            for i in range(config.movementSteps):
+                win32api.mouse_event(
+                    win32con.MOUSEEVENTF_MOVE,
+                    int(moveX * config.MovementCoefficientX),
+                    int(moveY * config.MovementCoefficientY),
+                    0, 0
+                )
+                time.sleep(config.delay)
 
 
+# === MAIN ===
 if __name__ == "__main__":
-    main()
+    # UI Panel
+    threading.Thread(target=CreateUIPanel, daemon=True).start()
+
+    # Circle Overlay
+    threading.Thread(target=CreateOverlay, daemon=True).start()
+
+    # Aim Assist
+    AimAssist()
