@@ -68,4 +68,6 @@ This will be completley free, except for the 1 key you have to do every month (l
 
 
 
+to all you fuckass stupid people that dont know how to code you can run the python files by just double clicking it 😔
+
 
