@@ -57,3 +57,8 @@ pls no hate :3
 
 
 
+if you want to run these programs using your gpu, ask chatgpt for your cuda and your gpu model, it wil figure it out for you. (the system has autodetect dont worry you don't have to code anything)
+
+
+
+
