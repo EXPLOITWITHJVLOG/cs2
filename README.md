@@ -16,6 +16,8 @@ RUN IT THE SECOND TIME
 BETA TESTING FOR MY POOKIE, NASEEQ (i love you twin)
 
 
+DOWNLOADING VISUAL STUDIO 2022 FIRST IS STRONGLY STRONGLY STRONGLY ADVISED!!! (IT MIGHT NOT WORK IF YOU DONT HAVE VISUAL STUDIO INSTALLED)
+
 if it says a error when trying to downoad all the pip installs 
 
 download this on ur cmd 
@@ -28,11 +30,12 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 or try to update python 
 
-if this dosen't work, just contact me on discord c00lk1d (this isnt the foreskin game i made the user 2 years before)
+if this dosen't work, just contact me on discord c00lk1d (this isnt the foreskin game, i made the user 2 years before)
 
 
 
 the motherfukkin aimassist dosent fucking work for some reason the math is wayyyyy off
+(never mind i fixed it)
 
 this code is skidded, runs off of prayers and chatgpt 
 if this was a car, it would be a car that only goes in first gear
@@ -41,23 +44,27 @@ this is a BETA version of this aimbot, but totally worth it cuz external
 
 
 
-naseeq if ur reading this then korean guy is spying on you (watch u goon)
-jk
-but fr tho if it dosent work try to call me like 12 hours later cuz i release from school early
-if ur sleeping (which i know u not) then idk what to do :/
-
-ill try to fix this ok but the only reason it worked for me was because i had visual studio installed, if it REALLY dosent work just install visual studio with c# 
-If this dont work ur pc is just ass 
-deadass u can sell this to ur friends but im gonna share it to kani also
-if u want foottage again js watch my yt (with mouse camera pov)
-
-WE love you brochacho <3
-
-pls no hate :3 
-
 
 
 if you want to run these programs using your gpu, ask chatgpt for your cuda and your gpu model, it wil figure it out for you. (the system has autodetect dont worry you don't have to code anything)
+if ur reading this and think what do i need to do if i dont have a cuda code gpu, then just use it, its default setting is on the cpu. (however temps may rise)
+
+optimal settings for this aimbot is to play without background apps running, unless you have a powerful cpu/gpu
+if you have a cpu as the default, only run cs2, and one cheat at a time
+when you run both cheats at the same time on a cpu, they will become buggy and be less efficient. (very sad)
+
+
+THIS IS A OPEN SOURCE MODEL; FEEL FREE TO CHANGE IT AS YOU LIKE, YOU CAN SWITCH BETWEEN GAMES BY FINDING A CONFIG THAT WAS ALREADY FINISHED BY SOMEONE, OR IF YOUR REALLY COMMITED JUST TRAIN THE AI YOURSELF
+
+tips are ALWAYS welcome
+
+this was made by crazy korean guy i hope you guys enjoy
+
+
+P.S. 
+another project I am doing is a free vpn to pair with the aimbot. (if your using roblox so you don't get detected)
+This will be completley free, except for the 1 key you have to do every month (linkvertise) and its going to be like 1 ad so dw
+
 
 
 
