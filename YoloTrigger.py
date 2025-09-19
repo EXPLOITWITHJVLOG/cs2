@@ -44,14 +44,14 @@ config = Config()
 
 def CreateOverlay():
     root = tk.Tk()
-    root.title("NAVALEN TRIGGERBOT")
+    root.title("N.A.S TRIGGERBOT")
     root.geometry("250x250")  # smaller window
     root.configure(bg="black")
 
     # Title
     tk.Label(
         root,
-        text="⚡ NAVALEN TRIGGERBOT ⚡",
+        text="N.A.S TRIGGERBOT",
         font=("Helvetica", 12, "bold"),
         fg="#9b59b6",  # purple
         bg="black",
@@ -221,3 +221,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
